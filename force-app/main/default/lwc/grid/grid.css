@@ -1,0 +1,42 @@
+.grid{
+    display: grid;
+    grid-template: auto auto / repeat(5, 1fr);
+    gap: 5px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.grid-item{ 
+    border: 1px solid;
+    border-color: var(--dark-gray);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    text-transform: uppercase;
+    gap: 0px;
+    font-weight: bold;
+    font-size: 25px;
+    color: white;
+}
+
+.correct{
+    border-color: var(--darkendGreen);
+    background-color: var(--green);
+    color: var(--white);
+}
+
+.wrong{
+    border-color: var(--dark-gray);
+    background-color: var(--dark-gray);
+    color: var(--white);
+}
+
+.partial{
+    border-color: var(--darkendYellow);
+    background-color: var(--darkendYellow);
+    color: var(--white);
+}

@@ -1,0 +1,9 @@
+<template>
+    <div class="grid">
+        <template for:each={boxes} for:index="i" for:item="boxRow">
+            <template for:each={boxRow} for:index="j" for:item="box">
+                <div key={box.id} class={box.className}>{box.letter}</div>
+            </template>
+        </template>
+    </div>
+</template>
