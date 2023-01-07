@@ -6,17 +6,18 @@ export default class Keyboard extends LightningElement {
     @track
     rows
 
-    @api
+    @track
     boxes
 
     keyMap = {}
 
     connectedCallback() {
-        this.renderKeyboard()
+        this.renderKeyboard([])
     }
 
     @api
-    renderKeyboard() {
+    renderKeyboard(newBoxes) {
+        this.boxes = newBoxes
         this.rows = [ 
             { key : 'row1', alphabets : [] }, 
             { key : 'row2', alphabets : [] }, 

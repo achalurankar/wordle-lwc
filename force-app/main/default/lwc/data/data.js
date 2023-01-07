@@ -25,7 +25,7 @@ export default class Data {
         return data
     }
 
-    static currentWord = null
+    static currentWord = 'SATAN'
     static previouslySelectedWords = []
 
     // static {

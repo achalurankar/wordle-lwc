@@ -57,7 +57,43 @@ export default class App extends LightningElement {
         return tempBoxes
     }
 
-    handleEnter() {}
+    handleEnter() {
+        //make word from letters
+        let word = ''
+        this.boxes[this.currIIndex].forEach((box, j) => {
+        if(box.letter)
+            word += box.letter;
+        })
+        if(word.length < Data.NO_OF_LETTERS) {
+            alert('Not enough letters')
+            return
+        }
+        //process the word
+        Data.checkWord(word, res => {
+            console.log(res)
+            if(res.status === Data.SUCCESS) {
+                let newBoxes = JSON.parse(JSON.stringify(this.boxes))
+                res.results.forEach((item, i) => {
+                    newBoxes[this.currIIndex][i].color = item.color
+                })
+                this.boxes = this.updateClassNames(newBoxes)
+                this.template.querySelector('c-keyboard').renderKeyboard(newBoxes)
+                let newIndex = this.currIIndex + 1
+                if(newIndex === Data.NO_OF_ATTEMPTS || (res.message && res.message.includes('Got'))){
+                    this.isGameFinished = true
+                    if(res.message)
+                        alert(res.message)
+                    else  
+                        alert('Oops, you lost :(\nCorrect Word - ' + res.correctWord)
+                    return
+                }
+                this.currIIndex = newIndex
+                this.currJIndex = 0
+            } else {
+                alert(res.message)
+            }
+        })
+    }
 
     handleDelete() {}
 
