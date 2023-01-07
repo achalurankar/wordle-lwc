@@ -95,7 +95,19 @@ export default class App extends LightningElement {
         })
     }
 
-    handleDelete() {}
+    handleDelete() {
+        let newIndex = this.currJIndex !== Data.NO_OF_LETTERS - 1 ? (this.currJIndex - 1) : this.currJIndex
+        let newBoxes = JSON.parse(JSON.stringify(this.boxes))
+        if(newIndex < 0)
+            return
+        if(newBoxes[this.currIIndex][newIndex].letter === null) //if still pointing to last element
+            newIndex--;
+        if(newIndex < 0)
+            newIndex = 0
+        newBoxes[this.currIIndex][newIndex].letter = null
+        this.currJIndex = newIndex
+        this.boxes = newBoxes
+    }
 
     decideClassName(box) {
         let className = 'grid-item'
