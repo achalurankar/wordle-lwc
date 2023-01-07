@@ -5,5 +5,20 @@
         <members>CalloutManager</members>
         <name>ApexClass</name>
     </types>
+    <types>
+        <members>app</members>
+        <members>data</members>
+        <members>grid</members>
+        <members>keyboard</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>WordChecker</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
+        <members>RandomWordAPI</members>
+        <name>CspTrustedSite</name>
+    </types>
     <version>55.0</version>
 </Package>
