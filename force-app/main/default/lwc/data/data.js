@@ -28,21 +28,20 @@ export default class Data {
     static currentWord = 'SATAN'
     static previouslySelectedWords = []
 
-    // static {
-    //     fetch('https://random-word-api.herokuapp.com/word?lang=en&number=1&length=' + Data.NO_OF_LETTERS)
-    //         .then(res=> res.json())
-    //         .then(data => {
-    //             this.currentWord = data[0].toUpperCase()
-    //             console.log('curr word', this.currentWord)
-    //         })
-    // }
+    static generateRandomWord() {
+        fetch('https://random-word-api.herokuapp.com/word?lang=en&number=1&length=' + Data.NO_OF_LETTERS)
+            .then(res=> res.json())
+            .then(data => {
+                this.currentWord = data[0].toUpperCase()
+                console.log('curr word', this.currentWord)
+            })
+    }
 
-    static async checkWord(word, callback) {
-        // const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + word)
-        const resCode = 200;
+    static async checkWord(word, isWordValid, callback) {
+        const isValid = await isWordValid({ word : word })
         let response = {}
         response.results =  []
-        if(resCode === 404){
+        if(!isValid){
             response.status = this.ERROR
             response.message = 'Not in the word list'
             callback(response)

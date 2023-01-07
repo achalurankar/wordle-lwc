@@ -1,5 +1,6 @@
 import { LightningElement, track } from 'lwc';
 import Data from 'c/data';
+import isWordValid from '@salesforce/apex/WordleController.isWordValid';
 
 export default class App extends LightningElement {
     
@@ -14,6 +15,7 @@ export default class App extends LightningElement {
 
     connectedCallback() {
         window._stringify = (input) => JSON.stringify(input)
+        Data.generateRandomWord()
         this.boxes = this.updateClassNames(Data.getBlankData());
     }
 
@@ -69,7 +71,7 @@ export default class App extends LightningElement {
             return
         }
         //process the word
-        Data.checkWord(word, res => {
+        Data.checkWord(word, isWordValid, res => {
             console.log(res)
             if(res.status === Data.SUCCESS) {
                 let newBoxes = JSON.parse(JSON.stringify(this.boxes))
