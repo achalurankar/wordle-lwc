@@ -1,13 +1,11 @@
 <template>
     <div class="keyboard">
-        <div class="key-container">
-            {keys.row1}
-        </div>
-        <div class="key-container">
-            {keys.row2}
-        </div>
-        <div class="key-container">
-            {keys.row3}
-        </div>
+        <template for:each={rows} for:item="row">
+            <div key={row.key} class="key-container">
+                <template for:each={row.alphabets} for:item="alphabet">
+                    <button key={alphabet.key} class={alphabet.className} value={alphabet.value} onclick={alphabet.onClick}>{alphabet.value}</button>
+                </template>
+            </div>
+        </template>
     </div>
 </template>
