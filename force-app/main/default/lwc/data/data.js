@@ -25,19 +25,17 @@ export default class Data {
         return data
     }
 
-    static currentWord = 'SATAN'
     static previouslySelectedWords = []
 
-    static generateRandomWord() {
+    static generateRandomWord(callback) {
         fetch('https://random-word-api.herokuapp.com/word?lang=en&number=1&length=' + Data.NO_OF_LETTERS)
             .then(res=> res.json())
             .then(data => {
-                this.currentWord = data[0].toUpperCase()
-                console.log('curr word', this.currentWord)
+                callback && callback(data[0].toUpperCase())
             })
     }
 
-    static async checkWord(word, isWordValid, callback) {
+    static async checkWord(word, correctWord, isWordValid, callback) {
         const isValid = await isWordValid({ word : word })
         let response = {}
         response.results =  []
@@ -48,8 +46,7 @@ export default class Data {
         }
         else {
             response.status = this.SUCCESS
-            response.correctWord = this.currentWord
-            if(this.currentWord === word) {
+            if(correctWord === word) {
                 response.message = 'You Got it!'
                 for(let i = 0; i < word.length; i++){
                     response.results.push({
@@ -59,12 +56,12 @@ export default class Data {
                 }
             } else {
                 for(let i = 0; i < word.length; i++) {
-                    let index = this.currentWord.indexOf(word[i])
+                    let index = correctWord.indexOf(word[i])
                     let color;
                     if(index === -1) {
                         color = this.WRONG
                     } else {
-                        if(word[index] === this.currentWord[index]) {
+                        if(word[index] === correctWord[index]) {
                             color = this.RIGHT
                         } else {
                             color = this.PARTIAL

@@ -10,6 +10,7 @@
         <members>data</members>
         <members>grid</members>
         <members>keyboard</members>
+        <members>cacheManager</members>
         <name>LightningComponentBundle</name>
     </types>
     <types>

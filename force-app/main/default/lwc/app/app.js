@@ -1,22 +1,29 @@
 import { LightningElement, track } from 'lwc';
 import Data from 'c/data';
 import isWordValid from '@salesforce/apex/WordleController.isWordValid';
+import CacheManager from 'c/cacheManager';
 
 export default class App extends LightningElement {
     
     @track
-    boxes = []
+    boxes
     @track
-    currIIndex = 0
+    currIIndex
     @track
-    currJIndex = 0
+    currJIndex
     @track
-    isGameFinished = false
+    isGameFinished
+    @track
+    correctWord
 
     connectedCallback() {
-        window._stringify = (input) => JSON.stringify(input)
-        Data.generateRandomWord()
-        this.boxes = this.updateClassNames(Data.getBlankData());
+        let data = CacheManager.getData()
+        if(!data.correctWord)
+            Data.generateRandomWord((word) => this.correctWord = word)
+        this.boxes = this.updateClassNames(data.boxes);
+        this.currIIndex = data.currIIndex;
+        this.currJIndex = data.currJIndex;
+        this.isGameFinished = data.isGameFinished;
     }
 
     handleKeyClick(event) {
@@ -71,26 +78,34 @@ export default class App extends LightningElement {
             return
         }
         //process the word
-        Data.checkWord(word, isWordValid, res => {
+        Data.checkWord(word, this.correctWord, isWordValid, res => {
             console.log(res)
             if(res.status === Data.SUCCESS) {
                 let newBoxes = JSON.parse(JSON.stringify(this.boxes))
                 res.results.forEach((item, i) => {
                     newBoxes[this.currIIndex][i].color = item.color
                 })
-                this.boxes = this.updateClassNames(newBoxes)
+                newBoxes = this.updateClassNames(newBoxes)
                 this.template.querySelector('c-keyboard').renderKeyboard(newBoxes)
+                this.boxes = newBoxes
                 let newIndex = this.currIIndex + 1
                 if(newIndex === Data.NO_OF_ATTEMPTS || (res.message && res.message.includes('Got'))){
                     this.isGameFinished = true
                     if(res.message)
                         alert(res.message)
                     else  
-                        alert('Oops, you lost :(\nCorrect Word - ' + res.correctWord)
+                        alert('Oops, you lost :(\nCorrect Word - ' + this.correctWord)
                     return
                 }
                 this.currIIndex = newIndex
                 this.currJIndex = 0
+                CacheManager.putData({
+                    boxes : newBoxes,
+                    isGameFinished : this.isGameFinished,
+                    currJIndex : 0,
+                    currIIndex : newIndex,
+
+                })
             } else {
                 alert(res.message)
             }
