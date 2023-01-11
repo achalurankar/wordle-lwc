@@ -17,13 +17,29 @@ export default class App extends LightningElement {
     correctWord
 
     connectedCallback() {
+        this.init()
+    }
+
+    init() {
         let data = CacheManager.getData()
         if(!data.correctWord)
             Data.generateRandomWord((word) => this.correctWord = word)
+        else
+            this.correctWord = data.correctWord;
         this.boxes = this.updateClassNames(data.boxes);
         this.currIIndex = data.currIIndex;
         this.currJIndex = data.currJIndex;
         this.isGameFinished = data.isGameFinished;
+    }
+
+    renderedCallback() {
+        console.count('app rendered')
+        this.template.querySelector('c-keyboard').renderKeyboard(this.boxes)
+    }
+
+    handleResetClick() {
+        CacheManager.clearData()
+        this.init()
     }
 
     handleKeyClick(event) {
@@ -78,7 +94,7 @@ export default class App extends LightningElement {
             return
         }
         //process the word
-        Data.checkWord(word, this.correctWord, isWordValid, res => {
+        Data.checkWord(word.toLowerCase(), this.correctWord, isWordValid, res => {
             console.log(res)
             if(res.status === Data.SUCCESS) {
                 let newBoxes = JSON.parse(JSON.stringify(this.boxes))
@@ -95,7 +111,6 @@ export default class App extends LightningElement {
                         alert(res.message)
                     else  
                         alert('Oops, you lost :(\nCorrect Word - ' + this.correctWord)
-                    return
                 }
                 this.currIIndex = newIndex
                 this.currJIndex = 0
@@ -104,7 +119,7 @@ export default class App extends LightningElement {
                     isGameFinished : this.isGameFinished,
                     currJIndex : 0,
                     currIIndex : newIndex,
-
+                    correctWord : this.correctWord,
                 })
             } else {
                 alert(res.message)

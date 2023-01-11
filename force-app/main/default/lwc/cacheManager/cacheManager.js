@@ -20,4 +20,8 @@ export default class CacheManager {
     static putData(data) {
         window.localStorage.setItem(this.CACHE_KEY, JSON.stringify(data))
     }
+
+    static clearData() {
+        window.localStorage.removeItem(this.CACHE_KEY)
+    }
 }
