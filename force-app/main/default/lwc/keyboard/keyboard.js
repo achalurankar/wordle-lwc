@@ -1,5 +1,6 @@
 import { api, LightningElement, track } from 'lwc';
 import Data from 'c/data';
+import CacheManager from 'c/cacheManager';
 
 export default class Keyboard extends LightningElement {
 
@@ -10,13 +11,16 @@ export default class Keyboard extends LightningElement {
     boxes
 
     keyMap = {}
-
-    connectedCallback() {
-        this.renderKeyboard([])
-    }
+    oldMap = {}
 
     @api
     renderKeyboard(newBoxes) {
+        let data = CacheManager.getData(CacheManager.KEY_KEYBOARD)
+        if(!data) 
+            data = {}
+        else
+            data = JSON.parse(data)
+        this.oldMap = data 
         this.boxes = newBoxes
         this.rows = [ 
             { key : 'row1', alphabets : [] }, 
@@ -63,13 +67,16 @@ export default class Keyboard extends LightningElement {
                 }
             }
         }
-        // console.log('boxes', JSON.stringify(this.boxes))  
         for(const alphabet of alphabets) {
             let className = 'unused'
             if(alphabet in currMap) {
                 className = currMap[alphabet]
             }
+            if(alphabet in this.oldMap && Data.colorVsCode[this.oldMap[alphabet]] > Data.colorVsCode[className])
+                className = this.oldMap[alphabet]
             this.keyMap[alphabet] = className
         }
+        this.oldMap = JSON.parse(JSON.stringify(this.keyMap))
+        CacheManager.putData(CacheManager.KEY_KEYBOARD, this.oldMap)
     }
 }

@@ -2,8 +2,14 @@ export default class Data {
 
     static UNANSWERED = 1 
     static WRONG = 2
-    static RIGHT = 3
-    static PARTIAL = 4
+    static PARTIAL = 3
+    static RIGHT = 4
+
+    static colorVsCode = {
+        'wrong' : this.WRONG,
+        'partial' : this.PARTIAL,
+        'correct' : this.RIGHT
+    }
 
     static ERROR = 404
     static SUCCESS = 200

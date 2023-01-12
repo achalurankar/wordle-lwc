@@ -21,7 +21,17 @@ export default class App extends LightningElement {
     }
 
     init() {
-        let data = CacheManager.getData()
+        let data = CacheManager.getData(CacheManager.KEY_GRID)
+        if(!data) {
+            data = {}
+            data.boxes = Data.getBlankData()
+            data.currJIndex = 0
+            data.currIIndex = 0
+            data.isGameFinished = false
+            data.correctWord = null
+        } else {
+            data = JSON.parse(data)
+        }
         if(!data.correctWord)
             Data.generateRandomWord((word) => this.correctWord = word)
         else
@@ -33,7 +43,6 @@ export default class App extends LightningElement {
     }
 
     renderedCallback() {
-        console.count('app rendered')
         this.template.querySelector('c-keyboard').renderKeyboard(this.boxes)
     }
 
@@ -78,7 +87,6 @@ export default class App extends LightningElement {
                 box.className = className
             }
         }
-        // console.log(JSON.stringify(tempBoxes))
         return tempBoxes
     }
 
@@ -95,7 +103,6 @@ export default class App extends LightningElement {
         }
         //process the word
         Data.checkWord(word.toLowerCase(), this.correctWord, isWordValid, res => {
-            console.log(res)
             if(res.status === Data.SUCCESS) {
                 let newBoxes = JSON.parse(JSON.stringify(this.boxes))
                 res.results.forEach((item, i) => {
@@ -114,7 +121,7 @@ export default class App extends LightningElement {
                 }
                 this.currIIndex = newIndex
                 this.currJIndex = 0
-                CacheManager.putData({
+                CacheManager.putData(CacheManager.KEY_GRID, {
                     boxes : newBoxes,
                     isGameFinished : this.isGameFinished,
                     currJIndex : 0,
